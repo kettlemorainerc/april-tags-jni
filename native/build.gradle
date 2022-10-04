@@ -1,0 +1,74 @@
+import com.badlogic.gdx.jnigen.BuildConfig
+import com.badlogic.gdx.jnigen.gradle.JnigenExtension
+
+import java.nio.file.Paths
+
+// Add buildscript dependency
+buildscript {
+    dependencies {
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.3.1"
+    }
+}
+
+plugins {
+    id 'java-library'
+}
+
+// Apply jnigen plugin
+apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+jnigen {
+    sharedLibName = "april_tags"
+    libsDir = "build/jnigen-lib"
+    subProjectDir = ""
+    jniDir = "build/jnigen-jni"
+
+    all {
+        cFlags += " "
+        cIncludes += "native-deps"
+        cIncludes += "jni"
+    }
+}
+
+task enforceLibDir {
+    doLast {
+        File libDir = file("jnigen-lib")
+        logger.lifecycle("${libDir} exists: ${libDir.exists()}")
+        if (libDir.exists() && !libDir.deleteDir()) throw new RuntimeException("Failed to make parent dir")
+    }
+}
+
+task outputSources {
+    doLast {
+        def sourceDir = file("jni")
+
+        def sourceFiles = new LinkedList<String>()
+        for(File f : sourceDir.listFiles()) {
+            if(f.name.endsWith(".cpp")) sourceFiles.add(f.absolutePath)
+        }
+
+        def sourceCmakeFile = file("cmake/sources.txt")
+        sourceFiles = sourceFiles.collect {"\"${it.replaceAll("\\\\", "/")}\""}
+
+        sourceCmakeFile.text = """list(APPEND JNI_CPP_SOURCES
+    ${sourceFiles.join("\n    ")}
+)"""
+    }
+}
+
+tasks.jnigen {
+    dependsOn tasks.enforceLibDir
+    finalizedBy tasks.outputSources
+}
+
+task enforceJniDir {
+    doLast {
+        File libDir = file("jnigen-jni")
+        logger.lifecycle("${libDir} exists: ${libDir.exists()}")
+        if (libDir.exists() && !libDir.deleteDir()) throw new RuntimeException("Failed to make parent dir")
+    }
+}
+
+tasks.jnigenBuild {
+    dependsOn tasks.enforceJniDir
+}
+

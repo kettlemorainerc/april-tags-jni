@@ -1,0 +1,3 @@
+[submodule "native/native-deps/april-tags"]
+	path = native/native-deps/april-tags
+	url = https://github.com/AprilRobotics/apriltag.git

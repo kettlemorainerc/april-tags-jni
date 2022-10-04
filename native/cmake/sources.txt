@@ -1,0 +1,7 @@
+list(APPEND JNI_CPP_SOURCES
+    "C:/Users/dafma/jungle/robos/april-tags/native/jni/com_squedgy_frc_team2077_april_tags_ByteImage.cpp"
+    "C:/Users/dafma/jungle/robos/april-tags/native/jni/com_squedgy_frc_team2077_april_tags_detection_Detection.cpp"
+    "C:/Users/dafma/jungle/robos/april-tags/native/jni/com_squedgy_frc_team2077_april_tags_detection_DetectionResult.cpp"
+    "C:/Users/dafma/jungle/robos/april-tags/native/jni/com_squedgy_frc_team2077_april_tags_detection_Detector.cpp"
+    "C:/Users/dafma/jungle/robos/april-tags/native/jni/com_squedgy_frc_team2077_april_tags_TagFamily.cpp"
+)
