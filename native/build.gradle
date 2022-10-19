@@ -14,6 +14,14 @@ plugins {
     id 'java-library'
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources", "tmp/Debug/", "/tmp/native-deps/april-tags/Debug"
+        }
+    }
+}
+
 // Apply jnigen plugin
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
@@ -29,11 +37,74 @@ jnigen {
     }
 }
 
+void delDir(File dir) {
+    for(File f : dir.listFiles()) {
+        if(f.isDirectory()) delDir(f);
+        else f.delete();
+    }
+
+    if(!dir.deleteDir()) throw new RuntimeException("Failed to delete ${dir.absolutePath}");
+}
+
+task buildJniLib {
+    dependsOn tasks.jnigen
+    doLast {
+        def build = file("${projectDir}/tmp")
+
+        if(build.exists()) delDir(build)
+
+        if(!build.mkdirs()) throw new RuntimeException("Failed to create/utilize tmp")
+
+        def pcs = new ProcessBuilder()
+                .directory(build)
+                .command("cmake", "${projectDir}", "-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_BUILD_TYPE=Release")
+                .redirectOutput(ProcessBuilder.Redirect.to(file("${build}/output.log")))
+                .redirectError(ProcessBuilder.Redirect.to(file("${build}/error.log")))
+                .start();
+
+        int exit = pcs.waitFor();
+
+        if(exit != 0) throw new RuntimeException("Failed to run cmake");
+
+        pcs = new ProcessBuilder()
+                .directory(build)
+                .command("cmake", "--build", ".")
+                .redirectOutput(ProcessBuilder.Redirect.appendTo(file("${build}/output.log")))
+                .redirectError(ProcessBuilder.Redirect.appendTo(file("${build}/error.log")))
+                .start();
+
+        exit = pcs.waitFor();
+
+        if(exit != 0) throw new RuntimeException("Failed to build");
+    }
+}
+
 task enforceLibDir {
     doLast {
         File libDir = file("jnigen-lib")
         logger.lifecycle("${libDir} exists: ${libDir.exists()}")
         if (libDir.exists() && !libDir.deleteDir()) throw new RuntimeException("Failed to make parent dir")
+    }
+}
+
+tasks.jar.dependsOn(buildJniLib)
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'org.openpnp', name: 'opencv', version: '4.5.5-1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.1'
+
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        showExceptions = (true)
     }
 }
 

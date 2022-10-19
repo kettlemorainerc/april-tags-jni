@@ -9,6 +9,7 @@ public class DetectionResult {
 
     private final long ptr;
     public final int length;
+
     DetectionResult(long ptr) {
         this.ptr = ptr;
         length = size(ptr);
@@ -29,10 +30,8 @@ public class DetectionResult {
     apriltag_detection_t *ref;
     zarray_get((zarray_t *) ptr, i, &ref);
 
-    return (jlong) ref;
-*/
+    return (jlong) ref;*/
 
     private static native int size(long of); /*
-    return (jint) zarray_size((zarray_t *) of);
-*/
+    return (jint) zarray_size((zarray_t *) of);*/
 }

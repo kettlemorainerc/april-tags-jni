@@ -7,6 +7,7 @@ public class Detector {
     /*JNI
 #include "jni.h"
 #include "april-tags/apriltag.h"
+#include <iostream>
 
 */
 
@@ -23,7 +24,20 @@ public class Detector {
     }
 
     private static native long search(long detectPtr, long imagePtr); /*
-    return (jlong) apriltag_detector_detect((apriltag_detector_t *) detectPtr, (image_u8_t *) imagePtr);*/
+    std::cout << "Detector!" << std::endl;
+    apriltag_detector_t *detector = (apriltag_detector_t *) detectPtr;
+    detector->mutex;
+
+    std::cout << "Image!" << std::endl;
+    image_u8_t *image = (image_u8_t *) imagePtr;
+    image->buf;
+
+    std::cout << "Search!" << std::endl;
+    zarray_t *arrPtr = apriltag_detector_detect(detector, image);
+    std::cout << "hav arr" << std::endl;
+
+    std::cout << "Return!" << ((int64_t) arrPtr) << std::endl;
+    return (jlong) (int64_t) arrPtr;*/
 
     private static long newDetector(TagFamily... families) {
         long[] ptrs = new long[families.length];
@@ -36,10 +50,12 @@ public class Detector {
 
     private static native long makeDetector(long[] ptrs, int count); /*
     int i;
+    std::cout << "Making detector with " << count << " families" << std::endl;
     apriltag_detector_t *detector = apriltag_detector_create();
     for(i = 0; i < count; i++) {
+        std::cout << "Adding family #" << i << std::endl;
         apriltag_detector_add_family(detector, (apriltag_family_t*) ptrs[i]);
     }
-    return (jlong) detector;
-*/
+
+    return (jlong) detector;*/
 }
