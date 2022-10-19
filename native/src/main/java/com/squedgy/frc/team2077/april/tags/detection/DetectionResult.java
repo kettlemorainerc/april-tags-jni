@@ -1,6 +1,9 @@
 package com.squedgy.frc.team2077.april.tags.detection;
 
-public class DetectionResult {
+import java.util.Iterator;
+import java.util.function.Consumer;
+
+public class DetectionResult implements Iterable<Detection> {
     /*JNI
 #include "jni.h"
 #include "april-tags/apriltag.h"
@@ -34,4 +37,20 @@ public class DetectionResult {
 
     private static native int size(long of); /*
     return (jint) zarray_size((zarray_t *) of);*/
+
+    @Override
+    public Iterator<Detection> iterator() {
+        return new Iterator<Detection>() {
+            private int current = 0;
+            @Override
+            public boolean hasNext() {
+                return current < length;
+            }
+
+            @Override
+            public Detection next() {
+                return get(current++);
+            }
+        };
+    }
 }

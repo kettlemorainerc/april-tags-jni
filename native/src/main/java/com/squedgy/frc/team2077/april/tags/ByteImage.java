@@ -31,15 +31,5 @@ public class ByteImage {
     uint8_t *buf = (uint8_t *) AS_PTR(data);
     image_u8_t *image = new image_u8_t{width, height, width, buf};
 
-    std::cout << "Accessing the entirety of the buffer" << std::endl;
-
-    int col, row;
-    for(row = 0; row < height; row++) {
-        for(col = 0; col < width; col++) {
-            std::cout << " " << buf[(row * height) + col];
-        }
-        std::cout << std::endl;
-    }
-
     return (jlong) image;*/
 }

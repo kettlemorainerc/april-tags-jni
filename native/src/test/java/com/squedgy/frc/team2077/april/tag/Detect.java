@@ -40,11 +40,9 @@ public class Detect {
             ByteImage image = new ByteImage(mat.rows(), mat.cols(), mat.dataAddr());
             DetectionResult search = detector.search(image);
 
-            System.out.printf("Detected %s images%n", search.length);
-            for(int i = 0; i < search.length; i++) {
-                Detection detection = search.get(i);
-
-                System.out.printf("Detected %s image%n", detection.getFamily().name);
+            System.out.printf("Detected %s images within %s%n", search.length, imageFile.getName());
+            for(Detection detection : search) {
+                System.out.printf("%s%n", detection);
             }
         }
     }

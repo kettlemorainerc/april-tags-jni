@@ -24,19 +24,11 @@ public class Detector {
     }
 
     private static native long search(long detectPtr, long imagePtr); /*
-    std::cout << "Detector!" << std::endl;
     apriltag_detector_t *detector = (apriltag_detector_t *) detectPtr;
-    detector->mutex;
-
-    std::cout << "Image!" << std::endl;
     image_u8_t *image = (image_u8_t *) imagePtr;
-    image->buf;
 
-    std::cout << "Search!" << std::endl;
     zarray_t *arrPtr = apriltag_detector_detect(detector, image);
-    std::cout << "hav arr" << std::endl;
 
-    std::cout << "Return!" << ((int64_t) arrPtr) << std::endl;
     return (jlong) (int64_t) arrPtr;*/
 
     private static long newDetector(TagFamily... families) {

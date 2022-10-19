@@ -8,6 +8,7 @@ public class Detection {
     /*JNI
 #include "jni.h"
 #include "april-tags/apriltag.h"
+#include <iostream>
 #define THIS(thing) ((apriltag_detection *) thing)
 #define FAM(thing) ((apriltag_family_t *) thing)
 
@@ -39,8 +40,10 @@ public class Detection {
     private static native double decisionMargin(long ptr); /* return THIS(ptr)->decision_margin; */
 
     private static native byte[] familyOf(long ptr); /*
-    char *name = FAM(ptr)->name;
+    apriltag_detection_t *detect = THIS(ptr);
+    char *name = detect->family->name;
 
+    // "Strings" are typically null ('\0') delimited. Detect length beforehand for populating the returned bytes
     int name_size;
     for(name_size = 0; (name[name_size]) != '\0'; name_size++);
 
@@ -48,6 +51,16 @@ public class Detection {
 
     env->SetByteArrayRegion(arr, 0, name_size, (const jbyte *) name);
 
-    return arr;
-*/
+    return arr;*/
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Detection[id=%s][family=%s][margin=%s][hamming=%s]",
+                getTagId(),
+                getFamily().name,
+                getDecisionMargin(),
+                getErrorBits()
+        );
+    }
 }
