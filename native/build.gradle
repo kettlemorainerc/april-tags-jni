@@ -104,6 +104,7 @@ test {
     useJUnitPlatform()
 
     testLogging {
+        events "standard_out", "standard_error"
         showExceptions = (true)
     }
 }

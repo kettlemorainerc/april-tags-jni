@@ -20,9 +20,7 @@ public class Detection {
     }
 
     public TagFamily getFamily() {
-        String name = new String(familyOf(ptr), StandardCharsets.UTF_8);
-
-        return TagFamily.ofName(name);
+        return TagFamily.fromNativePointer(familyPtr(ptr));
     }
 
     private static native long familyPtr(long ptr); /*
@@ -38,20 +36,6 @@ public class Detection {
 
     public double getDecisionMargin() {return decisionMargin(ptr);}
     private static native double decisionMargin(long ptr); /* return THIS(ptr)->decision_margin; */
-
-    private static native byte[] familyOf(long ptr); /*
-    apriltag_detection_t *detect = THIS(ptr);
-    char *name = detect->family->name;
-
-    // "Strings" are typically null ('\0') delimited. Detect length beforehand for populating the returned bytes
-    int name_size;
-    for(name_size = 0; (name[name_size]) != '\0'; name_size++);
-
-    jbyteArray arr = env->NewByteArray(name_size);
-
-    env->SetByteArrayRegion(arr, 0, name_size, (const jbyte *) name);
-
-    return arr;*/
 
     @Override
     public String toString() {
