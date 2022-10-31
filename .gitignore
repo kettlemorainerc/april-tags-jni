@@ -5,9 +5,10 @@
 build
 .idea
 
-native/natives
-native/tmp
-native/jni
+natives
+tmp
+jni
+fake-tag
 april_tags_2077.dll
 apriltagd.dll
 apriltagd.lib
