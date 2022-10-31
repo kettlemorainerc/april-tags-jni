@@ -8,5 +8,3 @@
  */
 
 rootProject.name = 'april-tags-2077'
-include('lib')
-include('native')
