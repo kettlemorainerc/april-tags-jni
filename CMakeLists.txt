@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 project(april_tags_2077 VERSION 1.0)
 
 include("cmake/sources.txt")
-add_library(${PROJECT_NAME} MODULE
+add_library(${PROJECT_NAME} SHARED
     ${JNI_CPP_SOURCES}
 )
 

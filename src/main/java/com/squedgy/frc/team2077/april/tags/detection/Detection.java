@@ -37,6 +37,34 @@ public class Detection {
     public double getDecisionMargin() {return decisionMargin(ptr);}
     private static native double decisionMargin(long ptr); /* return THIS(ptr)->decision_margin; */
 
+    public Point getCenter() {
+        double[] center = new double[2];
+        populate_center(ptr, center);
+
+        return new Point(center[0], center[1]);
+    }
+    private static native void populate_center(long ptr, double[] ctr); /*
+    const jdouble vals[2] = {THIS(ptr)->c[0], THIS(ptr)->c[1]};
+    const jdouble* values = (jdouble *)vals;
+
+    env->SetDoubleArrayRegion(obj_ctr, 0, 2, values); */
+
+    public Point[] getCorners() {
+        Point[] ret = new Point[4];
+
+        for(int i = 0; i < ret.length; i++) {
+            double[] coords = new double[2];
+            populate_corner(ptr, coords, i);
+
+            ret[i] = new Point(coords[0], coords[1]);
+        }
+
+        return ret;
+    }
+    private static native void populate_corner(long ptr, double[] point, int pt); /*
+    const jdouble* values = (jdouble *)(THIS(ptr)->p[pt]);
+    env->SetDoubleArrayRegion(obj_point, 0, 2, values); */
+
     @Override
     public String toString() {
         return String.format(

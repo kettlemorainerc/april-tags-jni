@@ -7,6 +7,7 @@ import com.squedgy.frc.team2077.april.tags.TagFamily;
 import com.squedgy.frc.team2077.april.tags.detection.Detection;
 import com.squedgy.frc.team2077.april.tags.detection.DetectionResult;
 import com.squedgy.frc.team2077.april.tags.detection.Detector;
+import com.squedgy.frc.team2077.april.tags.detection.Point;
 import org.junit.jupiter.api.Test;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 
 public class Detect {
 //    private static final String TAG_DIR = "C:\\Users\\dafma\\jungle\\robos\\apriltag-generation\\tags";
-    private static final String TAG_DIR = "C:\\Users\\dafma\\jungle\\robos\\april-tags\\native\\fake-tag";
+    private static final String TAG_DIR = "C:\\Users\\dafma\\jungle\\robos\\apriltag-generation\\tags";
 
     @Test
     void try_detect() throws IOException {
@@ -30,12 +31,13 @@ public class Detect {
         AprilTag.initialize();
         try(Detector detector = new Detector(TagFamily.TAG_36H11)) {
             detector.setMinWhiteBlackDiff(1);
-            detector.setMinClusterPixels(5);
+            detector.setMinClusterPixels(1);
             detector.setQuadDecimate(1);
-            detector.setConsideredCornerCandidates(200);
-            detector.setDebug(true);
+//            detector.setConsideredCornerCandidates(5);
+//            detector.setDebug(true);
 
             File[] files = tagsDir.listFiles((f, name) -> name.endsWith(".png"));
+            System.out.printf("%s is a dir %s%n", tagsDir, tagsDir.isDirectory());
             System.out.printf("Detecting files within %s%n", Arrays.toString(files));
             for(File imageFile : files) {
                 Mat mat = org.opencv.imgcodecs.Imgcodecs.imread(imageFile.getAbsolutePath());
@@ -43,14 +45,13 @@ public class Detect {
                 Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
 
                 ByteImage image = new ByteImage(gray.rows(), gray.cols(), gray.dataAddr());
-                System.out.printf("60, 60: %s%n", Arrays.toString(gray.get(60, 60)));
-                System.out.printf("0, 0: %s%n", Arrays.toString(gray.get(0, 0)));
-                System.out.printf("Trying %s x %s image %s%n", mat.rows(), mat.cols(), imageFile.getName());
                 DetectionResult search = detector.search(image);
 
                 System.out.printf("Detected %s tags within %s%n", search.length, imageFile.getName());
                 for(Detection detection : search) {
-                    System.out.printf("%s%n", detection);
+                    System.out.printf("%s at %s%n", detection, detection.getCenter());
+                    Point[] corners = detection.getCorners();
+                    System.out.printf("corners at %s%n", Arrays.toString(corners));
                 }
             }
         } catch (Exception e) {
