@@ -29,33 +29,30 @@ public class Detect {
 
         nu.pattern.OpenCV.loadShared();
         AprilTag.initialize();
-        try(Detector detector = new Detector(TagFamily.TAG_36H11)) {
-            detector.setMinWhiteBlackDiff(1);
-            detector.setMinClusterPixels(1);
-            detector.setQuadDecimate(1);
+        Detector detector = new Detector(TagFamily.TAG_36H11)
+        detector.setMinWhiteBlackDiff(1);
+        detector.setMinClusterPixels(1);
+        detector.setQuadDecimate(1);
 //            detector.setConsideredCornerCandidates(5);
 //            detector.setDebug(true);
 
-            File[] files = tagsDir.listFiles((f, name) -> name.endsWith(".png"));
-            System.out.printf("%s is a dir %s%n", tagsDir, tagsDir.isDirectory());
-            System.out.printf("Detecting files within %s%n", Arrays.toString(files));
-            for(File imageFile : files) {
-                Mat mat = org.opencv.imgcodecs.Imgcodecs.imread(imageFile.getAbsolutePath());
-                Mat gray = new Mat();
-                Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
+        File[] files = tagsDir.listFiles((f, name) -> name.endsWith(".png"));
+        System.out.printf("%s is a dir %s%n", tagsDir, tagsDir.isDirectory());
+        System.out.printf("Detecting files within %s%n", Arrays.toString(files));
+        for(File imageFile : files) {
+            Mat mat = org.opencv.imgcodecs.Imgcodecs.imread(imageFile.getAbsolutePath());
+            Mat gray = new Mat();
+            Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
 
-                ByteImage image = new ByteImage(gray.rows(), gray.cols(), gray.dataAddr());
-                DetectionResult search = detector.search(image);
+            ByteImage image = new ByteImage(gray.rows(), gray.cols(), gray.dataAddr());
+            DetectionResult search = detector.search(image);
 
-                System.out.printf("Detected %s tags within %s%n", search.length, imageFile.getName());
-                for(Detection detection : search) {
-                    System.out.printf("%s at %s%n", detection, detection.getCenter());
-                    Point[] corners = detection.getCorners();
-                    System.out.printf("corners at %s%n", Arrays.toString(corners));
-                }
+            System.out.printf("Detected %s tags within %s%n", search.length, imageFile.getName());
+            for(Detection detection : search) {
+                System.out.printf("%s at %s%n", detection, detection.getCenter());
+                Point[] corners = detection.getCorners();
+                System.out.printf("corners at %s%n", Arrays.toString(corners));
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
 
     }

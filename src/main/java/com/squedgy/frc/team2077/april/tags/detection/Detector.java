@@ -5,7 +5,7 @@ import com.squedgy.frc.team2077.april.tags.TagFamily;
 
 import java.lang.ref.Cleaner;
 
-public class Detector implements AutoCloseable {
+public class Detector {
     /*JNI
 #include "jni.h"
 #include "april-tags/apriltag.h"
@@ -102,10 +102,13 @@ public class Detector implements AutoCloseable {
 
     return (jlong) detector;*/
 
-    @Override
-    public void close() throws Exception {
-        closed = true;
-    }
+//    @Override
+//    public void close() throws Exception {
+//        if(closed) return;
+//
+//        closed = true;
+//        CleanupAction.clean_detector(ptr);
+//    }
 
     private static class CleanupAction implements Runnable {
         private final long detectorPtr;

@@ -17,7 +17,7 @@ public class ByteImage {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        clear(ptr);
+//        clear(ptr);
     }
 
     public long getPointer() {return ptr;}
