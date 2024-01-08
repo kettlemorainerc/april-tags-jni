@@ -29,7 +29,7 @@ public class Detect {
 
         nu.pattern.OpenCV.loadShared();
         AprilTag.initialize();
-        Detector detector = new Detector(TagFamily.TAG_36H11)
+        Detector detector = new Detector(TagFamily.TAG_36H11);
         detector.setMinWhiteBlackDiff(1);
         detector.setMinClusterPixels(1);
         detector.setQuadDecimate(1);
